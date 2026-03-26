@@ -43,7 +43,17 @@ if page == "Overview":
 
     col1.metric("Avg Salary", int(df[salary_col].mean()))
     col2.metric("Avg Skills", round(df[skills_col].mean(), 1))
-    col3.metric("Employability %", round(df[emp_col].mean()*100, 1))
+    emp_numeric = pd.to_numeric(df[emp_col], errors='coerce')
+
+# If still not numeric (like Yes/No), convert manually
+if emp_numeric.isnull().all():
+    emp_numeric = df[emp_col].map({
+        "Yes": 1, "No": 0,
+        "High": 1, "Low": 0,
+        "Employable": 1, "Not Employable": 0
+    })
+
+col3.metric("Employability %", round(emp_numeric.mean()*100, 1))
 
 
 # -----------------------
