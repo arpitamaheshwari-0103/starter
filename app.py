@@ -104,9 +104,26 @@ elif page == "Predictive Analytics":
     st.title("🤖 Predictive Analytics")
 
     # Prepare data
-    X = df[[exp_col, skills_col]]
-    y_class = emp_numeric
-    y_reg = df[salary_col]
+  # Prepare data safely
+X = df[[exp_col, skills_col]].copy()
+y_class = emp_numeric.copy()
+y_reg = df[salary_col].copy()
+
+# Convert to numeric
+X[exp_col] = pd.to_numeric(X[exp_col], errors='coerce')
+X[skills_col] = pd.to_numeric(X[skills_col], errors='coerce')
+y_reg = pd.to_numeric(y_reg, errors='coerce')
+
+# Combine into one dataframe for cleaning
+ml_df = pd.concat([X, y_class, y_reg], axis=1)
+
+# Drop missing values
+ml_df = ml_df.dropna()
+
+# Re-split clean data
+X = ml_df[[exp_col, skills_col]]
+y_class = ml_df[emp_col]
+y_reg = ml_df[salary_col]
 
     # Train-test split
     X_train, X_test, y_train_c, y_test_c = train_test_split(X, y_class, test_size=0.2, random_state=42)
