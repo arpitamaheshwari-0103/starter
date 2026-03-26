@@ -6,7 +6,7 @@ import plotly.express as px
 # -----------------------
 # LOAD DATA
 # -----------------------
-df = pd.read_csv("data.csv")
+df = pd.read_csv("SkillSync_AI_Candidates.csv")
 
 # -----------------------
 # SIDEBAR
