@@ -19,6 +19,18 @@ exp_col = [col for col in columns if "exp" in col.lower()][0]
 emp_col = [col for col in columns if "employ" in col.lower()][0]
 
 # -----------------------
+# FIX EMPLOYABILITY COLUMN
+# -----------------------
+emp_numeric = pd.to_numeric(df[emp_col], errors='coerce')
+
+if emp_numeric.isnull().all():
+    emp_numeric = df[emp_col].map({
+        "Yes": 1, "No": 0,
+        "High": 1, "Low": 0,
+        "Employable": 1, "Not Employable": 0
+    })
+
+# -----------------------
 # SIDEBAR
 # -----------------------
 st.sidebar.title("SkillSync AI")
@@ -43,17 +55,7 @@ if page == "Overview":
 
     col1.metric("Avg Salary", int(df[salary_col].mean()))
     col2.metric("Avg Skills", round(df[skills_col].mean(), 1))
-    emp_numeric = pd.to_numeric(df[emp_col], errors='coerce')
-
-# If still not numeric (like Yes/No), convert manually
-if emp_numeric.isnull().all():
-    emp_numeric = df[emp_col].map({
-        "Yes": 1, "No": 0,
-        "High": 1, "Low": 0,
-        "Employable": 1, "Not Employable": 0
-    })
-
-col3.metric("Employability %", round(emp_numeric.mean()*100, 1))
+    col3.metric("Employability %", round(emp_numeric.mean()*100, 1))
 
 
 # -----------------------
@@ -71,7 +73,7 @@ elif page == "Descriptive Analytics":
     st.plotly_chart(fig2)
 
     st.subheader("Employability Count")
-    fig3 = px.bar(df[emp_col].value_counts())
+    fig3 = px.bar(emp_numeric.value_counts())
     st.plotly_chart(fig3)
 
 
@@ -98,8 +100,6 @@ elif page == "Diagnostic Analytics":
 elif page == "Predictive Analytics":
     st.title("🤖 Predictive Analytics")
 
-    st.subheader("Simple Salary Prediction")
-
     exp = st.slider("Experience", 0, 10, 2)
     skills = st.slider("Skills Count", 1, 10, 5)
 
@@ -114,8 +114,6 @@ elif page == "Predictive Analytics":
 elif page == "Prescriptive Analytics":
     st.title("🎯 Prescriptive Analytics")
 
-    st.subheader("Skill Recommendation")
-
     skills = st.slider("Your Current Skills", 1, 10, 3)
 
     if skills < 4:
@@ -124,8 +122,6 @@ elif page == "Prescriptive Analytics":
         st.info("Recommendation: Learn Machine Learning, APIs")
     else:
         st.success("You are highly skilled! Focus on specialization.")
-
-    st.subheader("What-if Analysis")
 
     add_skill = st.checkbox("Add 1 Skill")
 
