@@ -14,6 +14,7 @@ st.set_page_config(page_title="SkillSync AI", layout="wide")
 
 st.title("🚀 SkillSync AI – Career Intelligence Platform")
 st.markdown("### Bridging Skill Gaps using Data & AI")
+st.caption("Note: All salary values represent Annual Income in INR (₹ per year).")
 
 # -----------------------
 # LOAD DATA
@@ -62,26 +63,26 @@ if page == "Overview":
 
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("💰 Avg Salary", f"₹{int(df[salary_col].mean())}")
+    col1.metric("💰 Avg Annual Salary", f"₹{int(df[salary_col].mean())}")
     col2.metric("🧠 Avg Skills", round(df[skills_col].mean(), 1))
     col3.metric("📈 Employability %", f"{round(emp_numeric.mean()*100,1)}%")
 
     st.markdown("---")
 
     st.markdown("### 📌 Key Insights")
-    st.success("Candidates with higher skills tend to achieve better salary outcomes.")
-    st.info("Experience alone is not sufficient; skills play a critical role.")
-    st.warning("A visible skill gap exists among candidates, especially at mid-level.")
+    st.success("Higher skill levels strongly influence higher annual salary.")
+    st.info("Experience contributes to growth but is less impactful than skills.")
+    st.warning("Mid-skill candidates indicate a visible skill gap in the dataset.")
 
     st.plotly_chart(
         px.scatter(
             df,
             x=skills_col,
             y=salary_col,
-            title="Skills vs Salary Relationship",
+            title="Skills vs Annual Salary (₹ per year)",
             labels={
                 skills_col: "Number of Skills",
-                salary_col: "Salary (₹)"
+                salary_col: "Annual Salary (₹)"
             }
         ),
         use_container_width=True
@@ -101,9 +102,9 @@ elif page == "Descriptive Analytics":
                 df,
                 x=salary_col,
                 nbins=20,
-                title="Salary Distribution",
+                title="Annual Salary Distribution (₹ per year)",
                 labels={
-                    salary_col: "Salary (₹)",
+                    salary_col: "Annual Salary (₹)",
                     "count": "Number of Candidates"
                 }
             ),
@@ -137,7 +138,7 @@ elif page == "Descriptive Analytics":
     )
 
     st.markdown("### 📌 Insight")
-    st.info("Most candidates fall in the mid-skill category, highlighting strong opportunities for upskilling.")
+    st.info("Distribution shows concentration in mid-skill levels, highlighting potential for targeted upskilling.")
 
 # -----------------------
 # DIAGNOSTIC
@@ -153,10 +154,10 @@ elif page == "Diagnostic Analytics":
                 df,
                 x=exp_col,
                 y=salary_col,
-                title="Experience vs Salary",
+                title="Experience vs Annual Salary",
                 labels={
                     exp_col: "Years of Experience",
-                    salary_col: "Salary (₹)"
+                    salary_col: "Annual Salary (₹)"
                 }
             ),
             use_container_width=True
@@ -168,17 +169,17 @@ elif page == "Diagnostic Analytics":
                 df,
                 x=skills_col,
                 y=salary_col,
-                title="Skills vs Salary",
+                title="Skills vs Annual Salary",
                 labels={
                     skills_col: "Number of Skills",
-                    salary_col: "Salary (₹)"
+                    salary_col: "Annual Salary (₹)"
                 }
             ),
             use_container_width=True
         )
 
     st.markdown("### 📌 Insight")
-    st.info("Skills appear to have a stronger impact on salary compared to experience in many cases.")
+    st.info("Skills demonstrate stronger correlation with salary than experience, indicating skill-driven growth.")
 
 # -----------------------
 # PREDICTIVE (ML)
@@ -221,7 +222,7 @@ elif page == "Predictive Analytics":
     st.write("R² Score:", round(r2_score(y_test_r, y_pred_r), 2))
 
     st.markdown("### 📌 Insight")
-    st.success("Model confirms that improving skills and experience increases employability and salary potential.")
+    st.success("Predictive models confirm that increasing skills and experience improves employability and salary outcomes.")
 
     st.subheader("🔮 Try Prediction")
 
@@ -231,7 +232,7 @@ elif page == "Predictive Analytics":
     input_data = np.array([[exp, skills]])
 
     st.success(f"Predicted Employability: {'Yes' if clf.predict(input_data)[0]==1 else 'No'}")
-    st.success(f"Predicted Salary: ₹{int(reg.predict(input_data)[0])}")
+    st.success(f"Predicted Annual Salary: ₹{int(reg.predict(input_data)[0])}")
 
 # -----------------------
 # PRESCRIPTIVE
